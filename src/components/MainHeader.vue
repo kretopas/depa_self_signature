@@ -1,0 +1,66 @@
+<template>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <router-link to="/">
+                <a class="navbar-brand">depa Self-Signature</a>
+            </router-link>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler"
+            aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle Navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggler">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0" v-if="accessToken">
+                    <li class="nav-item">
+                        <router-link to="#">
+                            <a href="javascript:void(0)" @click="logoutClick"
+                            class="nav-link">ออกจากระบบ</a>
+                        </router-link>
+                    </li>
+                </ul>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0" v-else>
+                    <li class="nav-item">
+                        <router-link to="/login">
+                            <a class="nav-link">เข้าสู่ระบบ</a>
+                        </router-link>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</template>
+
+<script>
+import { mapGetters } from 'vuex';
+import Swal from 'sweetalert2';
+
+export default {
+    name: 'mainHeader',
+    data() {
+        return {}
+    },
+    methods: {
+        logoutClick() {
+            Swal.fire({
+                text: "ออกจากระบบหรือไม่?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "ออกจากระบบ",
+                confirmButtonColor: "#d33",
+                cancelButtonText: "ยกเลิก"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.$store.dispatch('isLoggedIn', false);
+                    this.$store.dispatch('accessToken', null);
+                    this.$store.dispatch('refreshToken', null);
+                    this.$router.push('login')
+                }
+            })
+        }
+    },
+    computed: {
+        ...mapGetters(['accessToken']),
+        ...mapGetters(['refreshToken'])
+    }
+}
+
+</script>
