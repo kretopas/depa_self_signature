@@ -1,7 +1,6 @@
 <template>
     <div class="container">
         <h1>ลงนามเอกสาร</h1>
-        <h2>{{ accessToken }}</h2>
         <form @submit.prevent="signDocument" style="margin-top: 20px;">
             <div class="form-group row">
                 <label for="x_axis" class="col-sm-2 col-form-label">ตำแหน่ง X</label>
@@ -21,12 +20,6 @@
                     <input type="number" id="page_number" v-model="page_number" class="form-control" required />
                 </div>
             </div>
-            <!-- <div class="form-group row">
-                <label for="img_file" class="col-sm-2 col-form-label">ภาพลายเซ็น</label>
-                <div class="col-sm-10">
-                    <input type="file" id="img_file" name="img_file" required @change="selectedImage($event.target.files)"/>
-                </div>
-            </div> -->
             <div class="form-group row">
                 <label for="signer" class="col-sm-2 col-form-label">ผู้ลงนาม</label>
                 <div class="col-sm-10">
@@ -59,12 +52,15 @@
 <script>
 import { mapGetters } from 'vuex';
 import Swal from 'sweetalert2';
+import UserService from '@/services/user.service';
+import api from '@/services/api';
+import tokenService from '@/services/token.service';
 
 export default {
     name: 'SigningPage',
     data() {
         return {
-            x_axis: 485,
+            x_axis: 500,
             y_axis: 210,
             page_number: 1,
             cad_password: '',
@@ -77,19 +73,18 @@ export default {
         }
     },
     async mounted() {
-        // this.axios.get(`${process.env.VUE_APP_API}/all/signer`)
-        //     .then((response) => {
-        //         this.signer_options = response.data;
-        //     })
-        this.axios({
-            method: 'get',
-            url: `${process.env.VUE_APP_API}/all/signer`,
-            headers: {
-                'Authorization': 'Bearer ' + this.accessToken
+        // this.axios({
+        //     method: 'get',
+        //     url: `${process.env.VUE_APP_API}/all/signer`,
+        //     headers: authHeader()
+        // }).then((response) => {
+        //     this.signer_options = response.data;
+        // })
+        UserService.getAllSigners().then(
+            (response) => {
+                this.signer_options = response.data;
             }
-        }).then((response) => {
-            this.signer_options = response.data;
-        })
+        )
     },
     methods: {
         LoadingAlert() {
@@ -98,9 +93,6 @@ export default {
                 allowOutsideClick: false
             })
             Swal.showLoading()
-        },
-        defaultCAD() {
-            this.cad_password = process.env.VUE_APP_DEFAULT_CAD
         },
         signDocument() {
             Swal.fire({
@@ -120,7 +112,7 @@ export default {
                         page_number: this.page_number,
                         cad_password: this.signer_options.find(signer => signer.employee_id[0] === this.selected_signer).cad_password,
                         signer: this.selected_signer,
-                        requester: this.user
+                        token: tokenService.getLocalRefreshToken()
                     }
                     let formData = new FormData();
                     const json = JSON.stringify(data);
@@ -128,12 +120,14 @@ export default {
                     // formData.append("sign_img", this.img_file);
                     formData.append("pdf_file", this.pdf_file);
 
-                    this.axios({
+                    //this.axios({
+                    api({
                         method: 'post',
                         url: `${process.env.VUE_APP_API}/sign`,
                         data: formData,
                         headers: { "Content-Type": "multipart/form-data" },
                     }).then((response) => {
+                        console.log(response)
                         if (response.data.data != false) {
                             var pdf = (response.data.data)
                             const linkSource = `data:application/pdf;base64,${pdf}`;
@@ -173,9 +167,10 @@ export default {
                 const json = JSON.stringify(data);
                 formData.append("sign_data", json)
                 formData.append("pdf_file", this.pdf_file);
-                this.axios({
+                api({
                     method: 'post',
-                    url: `${process.env.VUE_APP_API}/preview`,
+                    //url: `${process.env.VUE_APP_API}/preview`,
+                    url: '/preview',
                     data: formData,
                     headers: { "Content-Type": "multipart/form-data" },
                 }).then((response) => {
@@ -202,7 +197,10 @@ export default {
     },
     computed: {
         ...mapGetters(['accessToken']),
-        ...mapGetters(['refreshToken'])
+        ...mapGetters(['refreshToken']),
+        currentUser() {
+            return this.$store.state.auth.user;
+        }
     }
 }
 </script>

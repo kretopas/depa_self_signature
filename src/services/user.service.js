@@ -1,9 +1,11 @@
-import axios from "axios";
-import authHeader from './auth-header';
+import api from "./api";
 
 class UserService {
     getUserCurrent() {
-        return axios.get(`${process.env.VUE_APP_API}/user/current`, { headers: authHeader() })
+        return api.get('/user/current');
+    }
+    getAllSigners() {
+        return api.get('/all/signer');
     }
 }
 

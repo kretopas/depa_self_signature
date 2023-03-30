@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '../store'
 import SigningPage from '../views/SigningPage.vue'
 import LoginPage from '../views/LoginPage.vue'
 
@@ -29,11 +28,11 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const requiresAuth = to.matched.some((x) => x.meta.requiresAuth);
     const requiresGuest = to.matched.some((x) => x.meta.requiresGuest);
-    const isLoggedIn = store.getters.isLoggedIn;
-
-    if (requiresAuth && !isLoggedIn) {
+    // const isLoggedIn = store.getters.isLoggedIn;
+    const currentUser = localStorage.getItem('user');
+    if (requiresAuth && !currentUser) {
         next({ name: 'login' });
-    } else if (requiresGuest && isLoggedIn) {
+    } else if (requiresGuest && currentUser) {
         next({ name: 'signingPage' });
     } else {
         next();

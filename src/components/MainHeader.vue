@@ -9,7 +9,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarToggler">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0" v-if="accessToken">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0" v-if="currentUser">
                     <li class="nav-item">
                         <router-link to="#">
                             <a href="javascript:void(0)" @click="logoutClick"
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+// import { mapGetters } from 'vuex';
 import Swal from 'sweetalert2';
 
 export default {
@@ -49,17 +49,24 @@ export default {
                 cancelButtonText: "ยกเลิก"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    this.$store.dispatch('isLoggedIn', false);
-                    this.$store.dispatch('accessToken', null);
-                    this.$store.dispatch('refreshToken', null);
-                    this.$router.push('login')
+                    this.$store.dispatch('auth/logout');
+                    this.$router.push('/login');
                 }
+                // if (result.isConfirmed) {
+                //     this.$store.dispatch('isLoggedIn', false);
+                //     this.$store.dispatch('accessToken', null);
+                //     this.$store.dispatch('refreshToken', null);
+                //     this.$router.push('login')
+                // }
             })
         }
     },
     computed: {
-        ...mapGetters(['accessToken']),
-        ...mapGetters(['refreshToken'])
+        // ...mapGetters(['accessToken']),
+        // ...mapGetters(['refreshToken'])
+        currentUser() {
+            return this.$store.state.auth.user;
+        }
     }
 }
 
