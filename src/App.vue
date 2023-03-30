@@ -5,6 +5,7 @@
 
 <script>
 import MainHeader from '@/components/MainHeader.vue';
+import EventBus from './common/EventBus';
 
 export default {
   name: 'MainApp',
@@ -15,6 +16,20 @@ export default {
     return {
     }
   },
+  methods: {
+    logOut() {
+      this.$store.dispatch('auth/logout');
+      this.$store.push('/login');
+    }
+  },
+  mounted() {
+    EventBus.on("logout", () => {
+      this.logOut()
+    });
+  },
+  beforeUnmount() {
+    EventBus.remove("logout");
+  }
 }
 </script>
 
