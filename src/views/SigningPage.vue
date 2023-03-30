@@ -5,13 +5,19 @@
             <div class="form-group row">
                 <label for="x_axis" class="col-sm-2 col-form-label">ตำแหน่ง X</label>
                 <div class="col-sm-10">
-                    <input type="number" id="x_axis" v-model="x_axis" class="form-control" required />
+                    <input type="number" id="x_axis" 
+                    v-model="x_axis" class="form-control"
+                    @change="changeShowPreview"
+                    required />
                 </div>
             </div>
             <div class="form-group row">
                 <label for="y_axis" class="col-sm-2 col-form-label">ตำแหน่ง Y</label>
                 <div class="col-sm-10">
-                    <input type="number" id="y_axis" v-model="y_axis" class="form-control" required />
+                    <input type="number" id="y_axis"
+                    v-model="y_axis" class="form-control"
+                    @change="changeShowPreview"
+                    required />
                 </div>
             </div>
             <div class="form-group row">
@@ -23,7 +29,7 @@
             <div class="form-group row">
                 <label for="signer" class="col-sm-2 col-form-label">ผู้ลงนาม</label>
                 <div class="col-sm-10">
-                    <select v-model="selected_signer" id="signer">
+                    <select v-model="selected_signer" id="signer" @change="changeShowPreview">
                         <option value="" disabled hidden>-- เลือกผู้ลงนาม --</option>
                         <option v-for="(signer, index) in signer_options" :value="signer.employee_id[0]" v-bind:key="index">
                             {{ signer.employee_id[1] }}
@@ -34,7 +40,9 @@
             <div class="form-group row">
                 <label for="pdf_file" class="col-sm-2 col-form-label">ไฟล์เอกสาร</label>
                 <div class="col-sm-10">
-                    <input type="file" id="pdf_file" name="pdf_file" required @change="selectedPDF($event.target.files)" />
+                    <input type="file" id="pdf_file" name="pdf_file"
+                    required @change="selectedPDF($event.target.files)"
+                    />
                 </div>
             </div>
             <div class="form-group mb-2">
@@ -55,6 +63,7 @@ import Swal from 'sweetalert2';
 import UserService from '@/services/user.service';
 import api from '@/services/api';
 import tokenService from '@/services/token.service';
+import EventBus from '@/common/EventBus';
 
 export default {
     name: 'SigningPage',
@@ -83,6 +92,16 @@ export default {
         UserService.getAllSigners().then(
             (response) => {
                 this.signer_options = response.data;
+            },
+            error => {
+                this.content = 
+                (error.response && error.response.data && error.response.data.message) ||
+                error.message ||
+                error.toString()
+
+                if (error.response && error.response.status === 403) {
+                    EventBus.dispatch("logout");
+                }
             }
         )
     },
@@ -105,7 +124,6 @@ export default {
                 cancelButtonColor: "#d33"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // this.LoadingAlert();
                     var data = {
                         x_axis: this.x_axis,
                         y_axis: this.y_axis,
@@ -155,8 +173,14 @@ export default {
         selectedPDF(event) {
             this.pdf_file = event[0]
         },
+        changeShowPreview() {
+            if (this.selected_signer && this.pdf_file &&
+                this.x_axis && this.y_axis && this.previewPDF) {
+                this.showPreview()
+            }
+        },
         showPreview() {
-            if (this.selected_signer && this.pdf_file) {
+            if (this.selected_signer && this.pdf_file && this.x_axis && this.y_axis) {
                 var data = {
                     x_axis: this.x_axis,
                     y_axis: this.y_axis,
