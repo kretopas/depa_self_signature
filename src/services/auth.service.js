@@ -10,10 +10,11 @@ class AuthService {
             }
         ).then(response => {
             if (response.data.access_token) {
-                //localStorage.setItem('user', JSON.stringify(response.data));
                 TokenService.setUser(response.data);
+                return Promise.resolve(response.data);
+            } else {
+                return Promise.reject('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง<br/>กรุณาตรวจสอบอีกครั้ง');
             }
-            return response.data;
         });
     }
 

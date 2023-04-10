@@ -11,6 +11,16 @@
             <div class="collapse navbar-collapse" id="navbarToggler">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0" v-if="currentUser">
                     <li class="nav-item">
+                        <router-link to="/">
+                            <a class="nav-link">ลงนาม (ผู้บริหาร)</a>
+                        </router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link to="/self">
+                            <a class="nav-link">ลงนาม (ด้วยตัวเอง)</a>
+                        </router-link>
+                    </li>
+                    <li class="nav-item">
                         <router-link to="#">
                             <a href="javascript:void(0)" @click="logoutClick"
                             class="nav-link">ออกจากระบบ</a>
@@ -30,7 +40,6 @@
 </template>
 
 <script>
-// import { mapGetters } from 'vuex';
 import Swal from 'sweetalert2';
 
 export default {
@@ -52,18 +61,10 @@ export default {
                     this.$store.dispatch('auth/logout');
                     this.$router.push('/login');
                 }
-                // if (result.isConfirmed) {
-                //     this.$store.dispatch('isLoggedIn', false);
-                //     this.$store.dispatch('accessToken', null);
-                //     this.$store.dispatch('refreshToken', null);
-                //     this.$router.push('login')
-                // }
             })
         }
     },
     computed: {
-        // ...mapGetters(['accessToken']),
-        // ...mapGetters(['refreshToken'])
         currentUser() {
             return this.$store.state.auth.user;
         }

@@ -1,11 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import SigningPage from '../views/SigningPage.vue'
-import LoginPage from '../views/LoginPage.vue'
+import SigningPage from '@/views/SigningPage.vue'
+import SelfSigningPage from '@/views/SelfSigningPage.vue';
+import LoginPage from '@/views/LoginPage.vue'
 
-const routes = [{
+const routes = [
+    {
         path: '/',
         name: 'signingPage',
         component: SigningPage,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/self',
+        name: 'selfSigningPage',
+        component: SelfSigningPage,
         meta: {
             requiresAuth: true
         }
@@ -28,7 +38,6 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const requiresAuth = to.matched.some((x) => x.meta.requiresAuth);
     const requiresGuest = to.matched.some((x) => x.meta.requiresGuest);
-    // const isLoggedIn = store.getters.isLoggedIn;
     const currentUser = localStorage.getItem('user');
     if (requiresAuth && !currentUser) {
         next({ name: 'login' });

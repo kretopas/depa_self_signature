@@ -70,7 +70,24 @@ nav {
 }
 
 .btn-block {
-  margin-left: 20px;
+  margin-left: 10px;
+}
+
+.btm-row {
+  display: flex;
+  padding-top: 10px;
+}
+
+.form-box {
+  margin-top: 20px;
+}
+
+.form-label {
+  text-align: left;
+}
+
+.page-title {
+  margin-top: 10px;
 }
 
 /* nav a {
