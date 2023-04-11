@@ -78,6 +78,12 @@ export default {
 		}
 	},
 	methods: {
+        changeShowPreview() {
+            if (this.img_file && this.pdf_file &&
+                this.x_axis && this.y_axis && this.previewPDF) {
+                this.showPreview()
+            }
+        },
 		signDocument() {
 			Swal.fire({
                 title: "ยืนยัน?",
