@@ -1,65 +1,72 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <h1 class="page-title">{{ pageTitle }}</h1>
-        <form @submit.prevent="signDocument" class="form-box">
-            <div class="form-group row">
-                <label for="x_axis" class="col-sm-2 col-form-label">ตำแหน่ง X</label>
-                <div class="col-sm-10">
-                    <input type="number" id="x_axis" 
-                    v-model="x_axis" class="form-control"
-                    @change="changeShowPreview"
-                    required />
+        <div class="row">
+            <div class="col-sm border-grid">
+                <form @submit.prevent="signDocument" class="form-box">
+                    <div class="form-group row">
+                        <label for="x_axis" class="col-sm-4 col-form-label">ตำแหน่ง X</label>
+                        <div class="col-sm-8">
+                            <input type="number" id="x_axis" 
+                            v-model="x_axis" class="form-control"
+                            @change="changeShowPreview"
+                            required />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="y_axis" class="col-sm-4 col-form-label">ตำแหน่ง Y</label>
+                        <div class="col-sm-8">
+                            <input type="number" id="y_axis"
+                            v-model="y_axis" class="form-control"
+                            @change="changeShowPreview"
+                            required />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="page_number" class="col-sm-4 col-form-label">หน้า</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" 
+                            id="page_number" v-model="page_number"
+                            required />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="signer" class="col-sm-4 col-form-label">ผู้ลงนาม</label>
+                        <div class="col-sm-8">
+                            <select class="form-control"
+                            v-model="selected_signer" id="signer" 
+                            @change="changeShowPreview">
+                                <option value="" disabled hidden>-- เลือกผู้ลงนาม --</option>
+                                <option v-for="(signer, index) in signer_options" :value="signer.employee_id[0]" v-bind:key="index">
+                                    {{ signer.employee_id[1] }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="pdf_file" class="col-sm-4 col-form-label">ไฟล์เอกสาร (.pdf)</label>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control"
+                            id="pdf_file" name="pdf_file"
+                            @change="selectedPDF($event.target.files)"
+                            accept="application/pdf"
+                            required />
+                        </div>
+                    </div>
+                    <div class="form-group mb-2">
+                        <button class="btn btn-warning btn-block mb-2" type="button" @click="showPreview" v-if="!previewPDF">ดูตัวอย่าง</button>
+                        <button class="btn btn-secondary btn-block mb-2" type="button" v-else @click="previewPDF = false">ปิดตัวอย่าง</button>
+                        <button class="btn btn-primary btn-block mb-2">ลงนาม</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm">
+                <div v-show="previewPDF">
+                    <iframe width="100%" height="500px"
+                    :src="preview_src" title="preview.pdf"></iframe>
                 </div>
             </div>
-            <div class="form-group row">
-                <label for="y_axis" class="col-sm-2 col-form-label">ตำแหน่ง Y</label>
-                <div class="col-sm-10">
-                    <input type="number" id="y_axis"
-                    v-model="y_axis" class="form-control"
-                    @change="changeShowPreview"
-                    required />
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="page_number" class="col-sm-2 col-form-label">หน้า</label>
-                <div class="col-sm-10">
-                    <input type="number" class="form-control" 
-                    id="page_number" v-model="page_number"
-                    required />
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="signer" class="col-sm-2 col-form-label">ผู้ลงนาม</label>
-                <div class="col-sm-10">
-                    <select class="form-control"
-                    v-model="selected_signer" id="signer" 
-                    @change="changeShowPreview">
-                        <option value="" disabled hidden>-- เลือกผู้ลงนาม --</option>
-                        <option v-for="(signer, index) in signer_options" :value="signer.employee_id[0]" v-bind:key="index">
-                            {{ signer.employee_id[1] }}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="pdf_file" class="col-sm-2 col-form-label">ไฟล์เอกสาร (.pdf)</label>
-                <div class="col-sm-10">
-                    <input type="file" class="form-control"
-                    id="pdf_file" name="pdf_file"
-                    @change="selectedPDF($event.target.files)"
-                    required />
-                </div>
-            </div>
-            <div class="form-group mb-2">
-                <button class="btn btn-warning btn-block mb-2" type="button" @click="showPreview" v-if="!previewPDF">ดูตัวอย่าง</button>
-                <button class="btn btn-secondary btn-block mb-2" type="button" v-else @click="previewPDF = false">ปิดตัวอย่าง</button>
-                <button class="btn btn-primary btn-block mb-2">ลงนาม</button>
-            </div>
-            <div v-show="previewPDF">
-                <iframe width="100%" height="500px"
-                :src="preview_src" title="preview.pdf"></iframe>
-            </div>
-        </form>
+        </div>
     </div>
 </template>
 

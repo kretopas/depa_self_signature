@@ -90,12 +90,8 @@ nav {
   margin-top: 10px;
 }
 
-/* nav a {
-  font-weight: bold;
-  color: #2c3e50;
+.border-grid {
+	padding-right:20px;
+	border-right: 1px solid #ccc;
 }
-
-nav a.router-link-exact-active {
-  color: #42b983;
-} */
 </style>
