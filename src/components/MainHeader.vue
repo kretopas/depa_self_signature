@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-depa">
         <div class="container-fluid">
             <router-link to="/">
                 <a class="navbar-brand">depa Self-Signature</a>
@@ -12,12 +12,16 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0" v-if="currentUser">
                     <li class="nav-item">
                         <router-link to="/">
-                            <a class="nav-link">ลงนาม (ผู้บริหาร)</a>
+                            <a class="nav-link" :class="$route.name == 'signingPage'? 'active':''">
+                                ลงนาม (ผู้บริหาร)
+                            </a>
                         </router-link>
                     </li>
                     <li class="nav-item">
                         <router-link to="/self">
-                            <a class="nav-link">ลงนาม (ด้วยตัวเอง)</a>
+                            <a class="nav-link" :class="$route.name == 'selfSigningPage'? 'active':''">
+                                ลงนาม (ด้วยตัวเอง)
+                            </a>
                         </router-link>
                     </li>
                     <li class="nav-item">
@@ -70,5 +74,29 @@ export default {
         }
     }
 }
-
 </script>
+
+<style scoped>
+.bg-depa {
+	background-color: #0c2f53;
+}
+
+a.nav-link:hover {
+	color: #ffc600;
+}
+
+.active {
+    border: solid yellow 1px;
+    border-radius: 13px;
+    box-shadow: 1px 2px #ffc600;
+}
+
+a {
+	color: whitesmoke;
+	text-decoration: none;
+}
+
+#navbarToggler .active {
+    color: #ffc600;
+}
+</style>
