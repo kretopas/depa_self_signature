@@ -56,6 +56,20 @@ class DocumentService {
 			}
 		})
 	}
+
+	createCircularDocument(formData) {
+		return api.post(
+			"/internal/circular",
+			formData,
+			{ "Content-Type": "multipart/form-data" }
+		).then(response => {
+			if (response.data.toLowerCase() != 'false') {
+				return Promise.resolve(response.data)
+			} else {
+				return Promise.reject('ไม่สามารถสร้างหนังสือเวียนได้')
+			}
+		})
+	}
 }
 
 export default new DocumentService()
