@@ -4,6 +4,9 @@
 		<div class="row">
 			<div class="col-sm border-grid">
 				<form @submit.prevent="createCircularDocument" class="form-box">
+					<div>
+						<h2>สร้างหนังสือเวียนใหม่</h2>
+					</div>
 					<div class="form-group row">
 						<label for="specific_document_no" class="col-sm-4 col-form-label">
 							เลขหนังสือจริง
@@ -57,11 +60,56 @@
 						</div>
 					</div>
 					<div class="form-group mb-2">
-						<button class="btn btn-primary btn-block mb-2">สร้าง</button>
+						<button class="btn btn-primary btn-block mb-2">
+							สร้าง
+						</button>
 					</div>
 				</form>
 			</div>
 			<div class="col-sm">
+				<form class="form-box">
+					<div>
+						<h2>ดาวน์โหลดหนังสือเวียน (⚠️ ยังใช้ไม่ได้)</h2>
+					</div>
+					<div class="form-group row">
+						<label for="docNo" class="col-sm-4 col-form-label">
+							เลขหนังสือ
+						</label>
+						<div class="col-sm-8">
+							<input
+							id="docNo"
+							type="text"
+							class="form-control"
+							v-model="downloadData.docNo"
+							disabled
+							required />
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="fileName" class="col-sm-4 col-form-label">
+							ชื่อไฟล์
+						</label>
+						<div class="col-sm-8">
+							<div class="input-group">
+								<input
+								id="fileName"
+								type="text"
+								class="form-control"
+								v-model="downloadData.fileName"
+								disabled
+								required />
+								<div class="input-group-append">
+									<span class="input-group-text" id="fileName-append">.zip</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group mb-2">
+						<button class="btn btn-success btn-block mb-2">
+							ดาวน์โหลด
+						</button>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -92,6 +140,10 @@ export default {
 				circular_letter_check: true,
 				specific_document_no: null,
 				specific_date: null
+			},
+			downloadData: {
+				docNo: null,
+				fileName: null
 			}
 		}
 	},
@@ -107,6 +159,9 @@ export default {
                 cancelButtonColor: "#d33"
             }).then((result) => {
                 if (result.isConfirmed) {
+					if (this.createData.specific_date.includes("/")) {
+						this.createData.specific_date = this.createData.specific_date.split("/").reverse().join("-")
+					}
 					let formData = new FormData()
 					const json = JSON.stringify(this.createData)
 					formData.append("create_data", json)

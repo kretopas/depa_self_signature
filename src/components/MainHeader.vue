@@ -27,7 +27,7 @@
                     <li class="nav-item">
                         <router-link to="/internal">
                             <a class="nav-link" :class="$route.name == 'internalCircularDocument'? 'active':''">
-                                สร้างหนังสือเวียน
+                                หนังสือเวียน
                             </a>
                         </router-link>
                     </li>
