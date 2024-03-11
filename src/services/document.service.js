@@ -70,6 +70,19 @@ class DocumentService {
 			}
 		})
 	}
+
+	downloadCircularDocument(downloadData) {
+		return api.post(
+			"/internal/circular/download",
+			downloadData
+		).then(response => {
+			if (response.data.toLowerCase() != 'false') {
+				return Promise.resolve(response.data)
+			} else {
+				return Promise.reject("ไม่สามารถดาวน์โหลดหนังสือเวียนได้")
+			}
+		})
+	}
 }
 
 export default new DocumentService()

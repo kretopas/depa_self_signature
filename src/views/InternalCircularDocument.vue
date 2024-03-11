@@ -67,21 +67,20 @@
 				</form>
 			</div>
 			<div class="col-sm">
-				<form class="form-box">
+				<form @submit.prevent="downloadCircularDocument" class="form-box">
 					<div>
-						<h2>ดาวน์โหลดหนังสือเวียน (⚠️ ยังใช้ไม่ได้)</h2>
+						<h2>ดาวน์โหลดหนังสือเวียน</h2>
 					</div>
 					<div class="form-group row">
-						<label for="docNo" class="col-sm-4 col-form-label">
+						<label for="docName" class="col-sm-4 col-form-label">
 							เลขหนังสือ
 						</label>
 						<div class="col-sm-8">
 							<input
-							id="docNo"
+							id="docName"
 							type="text"
 							class="form-control"
-							v-model="downloadData.docNo"
-							disabled
+							v-model="downloadData.docName"
 							required />
 						</div>
 					</div>
@@ -96,7 +95,6 @@
 								type="text"
 								class="form-control"
 								v-model="downloadData.fileName"
-								disabled
 								required />
 								<div class="input-group-append">
 									<span class="input-group-text" id="fileName-append">.zip</span>
@@ -142,7 +140,7 @@ export default {
 				specific_date: null
 			},
 			downloadData: {
-				docNo: null,
+				docName: null,
 				fileName: null
 			}
 		}
@@ -180,12 +178,41 @@ export default {
 				}
 			})
 		},
+		downloadCircularDocument() {
+			Swal.fire({
+                title: "ยืนยัน?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "ยืนยัน",
+                confirmButtonColor: "#039018",
+                cancelButtonText: "ยกเลิก",
+                cancelButtonColor: "#d33"
+            }).then((result) => {
+                if (result.isConfirmed) {
+					helper.loadingAlert()
+					DocumentService.downloadCircularDocument(this.downloadData).then(
+						(response) => {
+							const linkSource = `data:application/zip;base64,${response}`;
+                            const downloadLink = document.createElement("a");
+                            const fileName = `${this.downloadData.fileName}.zip`;
+                            downloadLink.href = linkSource;
+                            downloadLink.download = fileName;
+                            downloadLink.click();
+							Swal.close()
+						},
+						error => {
+							helper.failAlert(error)
+						}
+					)
+				}
+			})	
+		},
 		selectedDocFile(event) {
 			this.docFile = event.target.files[0]
 		},
 		selectedNameFile(event) {
 			this.nameFile = event.target.files[0]
-		}
+		},
 	},
 	computed: {
 		currentUser() {
