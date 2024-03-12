@@ -25,6 +25,13 @@
                         </router-link>
                     </li>
                     <li class="nav-item">
+                        <router-link to="/internal">
+                            <a class="nav-link" :class="$route.name == 'internalCircularDocument'? 'active':''">
+                                หนังสือเวียน
+                            </a>
+                        </router-link>
+                    </li>
+                    <li class="nav-item">
                         <router-link to="#">
                             <a href="javascript:void(0)" @click="logoutClick"
                             class="nav-link">ออกจากระบบ</a>

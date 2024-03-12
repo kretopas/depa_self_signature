@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import SigningPage from '@/views/SigningPage.vue'
 import SelfSigningPage from '@/views/SelfSigningPage.vue';
+import InternalCircularDocument from '@/views/InternalCircularDocument.vue'
 import LoginPage from '@/views/LoginPage.vue'
 
 const routes = [
@@ -16,6 +17,14 @@ const routes = [
         path: '/self',
         name: 'selfSigningPage',
         component: SelfSigningPage,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/internal',
+        name: 'internalCircularDocument',
+        component: InternalCircularDocument,
         meta: {
             requiresAuth: true
         }
