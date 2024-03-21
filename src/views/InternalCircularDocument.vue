@@ -127,6 +127,7 @@ export default {
 			nameFile: null,
 			createData: {
 				document_type_select: "หนังสือภายนอก+หนังสือรับรอง",
+				document_type: "หนังสือภายนอก+หนังสือรับรอง",
 				speed: "1",
 				secret: "normal",
 				subject: "หนังสือเวียน (API)",
